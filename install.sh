@@ -7,7 +7,7 @@ path="$HOME/.logins"
 
 if ! [[ -f `which fswebcam` ]]; then
     echo "Installing fswebcam"
-    sudo apt-get install fswebcam
+    sudo apt-get -y install fswebcam
 fi
 
 if ! [[ -d $path ]]; then 
