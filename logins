@@ -95,10 +95,10 @@ elif [[ $1 == "--help" || $1 == "-h" ]]; then
     echo "                 with parameter \"all\" showing list of logins (like --list)"
     echo "                 with number showing appropriate login"
     echo "  -l  --list     showing list of logins"
-    echo "  -C  --clear    deleting all data"
+    echo "      --clear    deleting all data"
     echo "  -h  --help     showing this help page"
     
-elif [[ $1 == "--clear" || $1 == "-C" ]]; then
+elif [[ $1 == "--clear" ]]; then
     for file in $(ls $path | grep .jpg)
     do
         rm $path/$file
@@ -106,12 +106,12 @@ elif [[ $1 == "--clear" || $1 == "-C" ]]; then
     rm $path/logins.db
         
 elif [[ $1 == "" ]]; then
-    echo "  -C  --capture  creating new login with photo"
-    echo "  -S  --show     without parameters showing photo of last login"
+    echo "  -c  --capture  creating new login with photo"
+    echo "  -s  --show     without parameters showing photo of last login"
     echo "                 with parameter \"all\" showing list of logins (like --list)"
     echo "                 with number showing appropriate login"
-    echo "  -L  --list     showing list of logins"
-    echo "  -c  --clear    deleting all data"
+    echo "  -l  --list     showing list of logins"
+    echo "      --clear    deleting all data"
     echo "  -h  --help     showing this help page"
     echo "logins helps to check who using your PC. Its making photos on login with fswebcam"
     
