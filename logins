@@ -1,0 +1,125 @@
+#!/bin/bash
+storage_length=20
+camera="/dev/video0"
+resolution="1024x768"
+path="$HOME/.logins"
+
+
+if ! [[ -f `which fswebcam` ]]; then
+    echo "Installing fswebcam"
+    sudo apt-get install fswebcam    
+fi
+
+if ! [[ -d $path ]]; then 
+    echo "Creating $path"
+    mkdir $path
+fi
+
+
+if [[ $1 == "--capture" || $1 == "-c" ]]; then
+    # shooting picture from web camera
+    fswebcam -d $camera -S $s -F $f -r $resolution -q $path/`date +%d.%m.%y_%H:%M:%S`_$HOSTNAME.jpg 
+    # 
+    echo `date +%d.%m.%y_%H:%M:%S` >> $path/logins.db
+    photos_count=$(ls $path | grep .jpg | wc -l)
+    
+    if [[ $photos_count -gt $storage_length ]]; then
+        oldest_photo=`ls -1rt $path | grep .jpg | head -1`
+        rm $path/$oldest_photo
+        cat $path/logins.db | tail -$storage_length | tee $path/logins.db > /dev/null
+    fi
+    
+elif [[ $1 == "--show" || $1 == "-s" ]]; then
+    if [[ -f $path/logins.db ]]; then
+        logins_count=$(cat $path/logins.db | wc -l)
+    else 
+        logins_count=0
+    fi
+    login_number=$logins_count
+    if [[ $2 == "all" ]]; then
+        if [[ -f $path/logins.db ]]; then
+            echo "DATE     TIME     NUMBER"
+            for time in $(cat $path/logins.db)
+            do
+                echo "$time ($login_number)"
+                login_number=$(( $login_number - 1))
+            done
+            echo "Type \"logins show <NUMBER>\" to check photo of this login"
+        else
+            echo "logins database is empty"
+        fi
+        
+    elif [[ $2 == "" ]]; then
+        photo_name=`ls -1rt $path | grep .jpg | head -$(( $logins_count )) | tail -1`
+        if [[ $photo_name ]]; then
+            shotwell $path/$photo_name
+        else
+            echo "Unable to show photo"
+        fi
+        
+    elif [[ $2 -le $logins_count && $2 -gt 0 ]]; then
+        photo_name=`ls -1rt $path | grep .jpg | head -$(( $logins_count - $2 + 1 )) | tail -1`
+        if [[ $photo_name ]]; then
+            shotwell $path/$photo_name
+        else
+            echo "Unable to show photo"
+        fi
+        
+    else
+        echo "Unable to show photo for this login: \"$2\" (not a number or this login is not exist)"
+        
+    fi
+    
+elif [[ $1 == "--list" || $1 == "-l" ]]; then
+    if [[ -f $path/logins.db ]]; then
+        logins_count=$(cat $path/logins.db | wc -l)
+    else 
+        logins_count=0
+    fi
+    login_number=$logins_count
+    if [[ -f $path/logins.db ]]; then
+        echo "DATE     TIME     NUMBER"
+        for time in $(cat $path/logins.db)
+        do
+            echo "$time ($login_number)"
+            login_number=$(( $login_number - 1))
+        done
+        echo "Type \"logins show <NUMBER>\" to check photo of this login"
+    else
+        echo "logins database is empty"
+    fi
+    
+elif [[ $1 == "--help" || $1 == "-h" ]]; then
+    echo "  -c  --capture  creating new login with photo"
+    echo "  -s  --show     without parameters showing photo of last login"
+    echo "                 with parameter \"all\" showing list of logins (like --list)"
+    echo "                 with number showing appropriate login"
+    echo "  -l  --list     showing list of logins"
+    echo "  -C  --clear    deleting all data"
+    echo "  -h  --help     showing this help page"
+    
+elif [[ $1 == "--clear" || $1 == "-C" ]]; then
+    for file in $(ls $path | grep .jpg)
+    do
+        rm $path/$file
+    done
+    rm $path/logins.db
+        
+elif [[ $1 == "" ]]; then
+    echo "  -C  --capture  creating new login with photo"
+    echo "  -S  --show     without parameters showing photo of last login"
+    echo "                 with parameter \"all\" showing list of logins (like --list)"
+    echo "                 with number showing appropriate login"
+    echo "  -L  --list     showing list of logins"
+    echo "  -c  --clear    deleting all data"
+    echo "  -h  --help     showing this help page"
+    echo "logins helps to check who using your PC. Its making photos on login with fswebcam"
+    
+else
+    echo "Unknown command \"$1\", type \"logins --help\" to check help page"
+        
+fi
+
+
+
+#end;
