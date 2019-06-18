@@ -1,1 +1,37 @@
-# Authorization_tracking
+# Authorization tracking
+This programm helps to check who using your PC.
+Program now in developing, so its working only on Ubuntu 16.04 or higher (Gnome + GDM3)
+fswebcam is required for using it.
+## Installation
+To install this (if you crazy) ((and if this program is compatible with you system)) foolow the instructions
+Open terminal and go to the project folder. Make "install.sh" executable.
+```
+chmod +x install.sh
+```
+Start installation with sudo (because program installing to /usr/bin folder and goes to autostart).
+```
+sudo ./install.sh
+```
+Try to call programm from terminal.
+```
+logins --help
+```
+If all works fine - congratulations!
+Else - nothing surprising.
+## Using
+To make photo manually type:
+```
+logins -c
+```
+To see all authorizations:
+```
+logins -l
+```
+To check photo from last login:
+```
+logins -s
+```
+More information about using this programm you can read with:
+```
+logins -h
+```
