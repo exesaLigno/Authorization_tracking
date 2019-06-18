@@ -22,3 +22,20 @@ logins --help
 ```
 If all works fine - congratulations!
 Else - nothing surprising
+## Using
+To make photo manually type
+```
+logins -c
+```
+To all authorizations
+```
+logins -l
+```
+To check photo from last login
+```
+logins -s
+```
+More information about using this programm you can read with
+```
+logins -h
+```
